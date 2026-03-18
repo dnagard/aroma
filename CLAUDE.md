@@ -179,6 +179,11 @@ Route protection is enforced in `app/(protected)/layout.tsx`, which redirects un
 - Toast notifications and loading states throughout
 - Add OAuth options for login
 - Move auth folder from public to protected (to access logout from protected page)
+- Add support for pictures
+- Add loading animations
+- Add keureg option
+- Add support for "ML" informed grind settings
+
 
 **Phase 3 — Social / Discovery**
 - Café rating and discovery
