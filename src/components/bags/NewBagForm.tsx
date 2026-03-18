@@ -134,7 +134,7 @@ export function NewBagForm({ action }: Props) {
 
           <div className="space-y-2">
             <Label htmlFor="rating">Rating (1–10)</Label>
-            <Input id="rating" name="rating" type="number" min={1} max={10} step={0.1} placeholder="e.g. 8.5" />
+            <Input id="rating" name="rating" type="number" min={1} max={10} step={0.5} placeholder="e.g. 8.5" />
           </div>
 
           <div className="space-y-2">

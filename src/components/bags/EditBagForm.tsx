@@ -158,7 +158,7 @@ export function EditBagForm({ bag, action }: Props) {
               type="number"
               min={1}
               max={10}
-              step={0.1}
+              step={0.5}
               placeholder="e.g. 8.5"
               defaultValue={bag.rating?.toString() ?? ''}
             />

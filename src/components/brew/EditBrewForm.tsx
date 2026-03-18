@@ -9,20 +9,21 @@ import { Label } from '@/components/ui/label'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { Textarea } from '@/components/ui/textarea'
 import { BREW_METHOD_OPTIONS } from '@/lib/constants/methods'
-import type { CreateBrewState } from '@/app/(protected)/brews/actions'
-import type { Bag } from '@/types'
+import type { UpdateBrewState } from '@/app/(protected)/brews/actions'
+import type { Bag, BrewSession } from '@/types'
 
 type Props = {
-  action: (prevState: CreateBrewState, formData: FormData) => Promise<CreateBrewState>
+  brew: BrewSession
   bags: Pick<Bag, 'id' | 'name'>[]
-  defaultBrewedAt: string
+  action: (prevState: UpdateBrewState, formData: FormData) => Promise<UpdateBrewState>
 }
 
-export function NewBrewForm({ action, bags, defaultBrewedAt }: Props) {
+export function EditBrewForm({ brew, bags, action }: Props) {
   const [state, formAction, pending] = useActionState(action, null)
 
   return (
     <form action={formAction}>
+      <input type="hidden" name="id" value={brew.id} />
       <Card>
         <CardHeader>
           <CardTitle>Brew details</CardTitle>
@@ -34,7 +35,7 @@ export function NewBrewForm({ action, bags, defaultBrewedAt }: Props) {
 
           <div className="space-y-2">
             <Label htmlFor="bag_id">Bag *</Label>
-            <Select name="bag_id" required>
+            <Select name="bag_id" required defaultValue={brew.bag_id}>
               <SelectTrigger id="bag_id">
                 <SelectValue placeholder="Select a bag" />
               </SelectTrigger>
@@ -50,7 +51,7 @@ export function NewBrewForm({ action, bags, defaultBrewedAt }: Props) {
 
           <div className="space-y-2">
             <Label htmlFor="method">Method *</Label>
-            <Select name="method" required>
+            <Select name="method" required defaultValue={brew.method}>
               <SelectTrigger id="method">
                 <SelectValue placeholder="Select a method" />
               </SelectTrigger>
@@ -70,7 +71,7 @@ export function NewBrewForm({ action, bags, defaultBrewedAt }: Props) {
               id="brewed_at"
               name="brewed_at"
               type="datetime-local"
-              defaultValue={defaultBrewedAt}
+              defaultValue={brew.brewed_at.slice(0, 16)}
             />
           </div>
 
@@ -85,6 +86,7 @@ export function NewBrewForm({ action, bags, defaultBrewedAt }: Props) {
                 step={0.1}
                 placeholder="e.g. 18"
                 inputMode="decimal"
+                defaultValue={brew.dose_grams?.toString() ?? ''}
               />
             </div>
 
@@ -98,6 +100,7 @@ export function NewBrewForm({ action, bags, defaultBrewedAt }: Props) {
                 step={0.1}
                 placeholder="e.g. 36"
                 inputMode="decimal"
+                defaultValue={brew.out_grams?.toString() ?? ''}
               />
             </div>
           </div>
@@ -113,6 +116,7 @@ export function NewBrewForm({ action, bags, defaultBrewedAt }: Props) {
                 step={1}
                 placeholder="e.g. 300"
                 inputMode="decimal"
+                defaultValue={brew.water_grams?.toString() ?? ''}
               />
             </div>
 
@@ -126,6 +130,7 @@ export function NewBrewForm({ action, bags, defaultBrewedAt }: Props) {
                 step={0.5}
                 placeholder="e.g. 93"
                 inputMode="decimal"
+                defaultValue={brew.brew_temp_c?.toString() ?? ''}
               />
             </div>
           </div>
@@ -142,6 +147,7 @@ export function NewBrewForm({ action, bags, defaultBrewedAt }: Props) {
                   max={99}
                   placeholder="min"
                   inputMode="numeric"
+                  defaultValue={brew.brew_time_s != null ? Math.floor(brew.brew_time_s / 60).toString() : ''}
                 />
                 <span className="text-muted-foreground">:</span>
                 <Input
@@ -152,6 +158,7 @@ export function NewBrewForm({ action, bags, defaultBrewedAt }: Props) {
                   max={59}
                   placeholder="sec"
                   inputMode="numeric"
+                  defaultValue={brew.brew_time_s != null ? (brew.brew_time_s % 60).toString() : ''}
                 />
               </div>
             </div>
@@ -162,6 +169,7 @@ export function NewBrewForm({ action, bags, defaultBrewedAt }: Props) {
                 id="grind_size"
                 name="grind_size"
                 placeholder="e.g. 18 clicks"
+                defaultValue={brew.grind_size ?? ''}
               />
             </div>
           </div>
@@ -177,6 +185,7 @@ export function NewBrewForm({ action, bags, defaultBrewedAt }: Props) {
               step={0.5}
               placeholder="e.g. 8.5"
               inputMode="decimal"
+              defaultValue={brew.rating?.toString() ?? ''}
             />
           </div>
 
@@ -187,15 +196,16 @@ export function NewBrewForm({ action, bags, defaultBrewedAt }: Props) {
               name="notes"
               placeholder="What stood out? What would you change?"
               rows={4}
+              defaultValue={brew.notes ?? ''}
             />
           </div>
 
           <div className="flex gap-3">
             <Button type="submit" disabled={pending}>
-              {pending ? 'Saving…' : 'Log brew'}
+              {pending ? 'Saving…' : 'Save changes'}
             </Button>
             <Button variant="outline" asChild>
-              <Link href="/brews">Cancel</Link>
+              <Link href={`/brews/${brew.id}`}>Cancel</Link>
             </Button>
           </div>
         </CardContent>
