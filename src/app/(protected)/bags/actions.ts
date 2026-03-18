@@ -60,3 +60,24 @@ export async function createBagAction(
 
   redirect('/bags')
 }
+
+export async function deleteBagAction(id: string): Promise<void> {
+  const supabase = await createClient()
+  const { data: { user } } = await supabase.auth.getUser()
+
+  if (!user) {
+    redirect('/auth/login')
+  }
+
+  const { error } = await supabase
+    .from('bags')
+    .delete()
+    .eq('id', id)
+    .eq('user_id', user.id)
+
+  if (error) {
+    throw new Error(error.message)
+  }
+
+  redirect('/bags')
+}
