@@ -38,13 +38,13 @@ function applyTheme(themeId: ThemeId) {
 }
 
 export function ThemeSwitcher() {
-  const [current, setCurrent] = useState<ThemeId>("paper")
+  const [current, setCurrent] = useState<ThemeId>(
+    () => (typeof window !== "undefined" ? (localStorage.getItem("theme") ?? "paper") : "paper") as ThemeId
+  )
 
   useEffect(() => {
-    const saved = (localStorage.getItem("theme") ?? "paper") as ThemeId
-    setCurrent(saved)
-    applyTheme(saved)
-  }, [])
+    applyTheme(current)
+  }, [current])
 
   function handleSelect(themeId: ThemeId) {
     setCurrent(themeId)
