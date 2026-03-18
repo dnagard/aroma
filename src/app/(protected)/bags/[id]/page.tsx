@@ -4,8 +4,9 @@ import { createClient } from '@/lib/supabase/server'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { BREW_METHOD_LABELS } from '@/lib/constants/methods'
 import { deleteBagAction } from '../actions'
-import type { Bag } from '@/types'
+import type { Bag, BrewSession } from '@/types'
 
 function formatEnumValue(value: string): string {
   return value.replace(/_/g, ' ').replace(/\b\w/g, (c) => c.toUpperCase())
@@ -44,6 +45,13 @@ export default async function BagDetailPage({
   if (error || !bag) {
     redirect('/bags')
   }
+
+  const { data: brews } = await supabase
+    .from('brew_sessions')
+    .select('*')
+    .eq('bag_id', bag.id)
+    .eq('user_id', user.id)
+    .order('brewed_at', { ascending: false })
 
   const deleteWithId = deleteBagAction.bind(null, bag.id)
 
@@ -136,11 +144,50 @@ export default async function BagDetailPage({
 
       {/* Brew History */}
       <Card>
-        <CardHeader>
+        <CardHeader className="flex flex-row items-center justify-between space-y-0">
           <CardTitle className="text-base">Brew History</CardTitle>
+          {brews && brews.length > 0 && (
+            <Button size="sm" asChild>
+              <Link href="/brews/new">Log a brew</Link>
+            </Button>
+          )}
         </CardHeader>
         <CardContent>
-          <p className="text-sm text-muted-foreground">No brews logged yet.</p>
+          {!brews || brews.length === 0 ? (
+            <div className="flex flex-col items-center gap-3 py-4 text-center">
+              <p className="text-sm text-muted-foreground">No brews logged yet.</p>
+              <Button size="sm" asChild>
+                <Link href="/brews/new">Log a brew with this bag</Link>
+              </Button>
+            </div>
+          ) : (
+            <div className="divide-y -mx-6">
+              {(brews as BrewSession[]).map((brew) => (
+                <Link
+                  key={brew.id}
+                  href={`/brews/${brew.id}`}
+                  className="flex items-center justify-between gap-4 px-6 py-3 hover:bg-muted/50 transition-colors"
+                >
+                  <div className="min-w-0">
+                    <p className="text-sm font-medium">
+                      {BREW_METHOD_LABELS[brew.method] ?? brew.method}
+                    </p>
+                    <p className="text-xs text-muted-foreground">
+                      {new Date(brew.brewed_at).toLocaleDateString()}
+                    </p>
+                  </div>
+                  <div className="flex shrink-0 items-center gap-4 text-sm text-muted-foreground">
+                    {brew.dose_grams != null && brew.out_grams != null && (
+                      <span>{brew.dose_grams}g / {brew.out_grams}g</span>
+                    )}
+                    {brew.rating != null && (
+                      <span className="font-medium text-foreground">{brew.rating}</span>
+                    )}
+                  </div>
+                </Link>
+              ))}
+            </div>
+          )}
         </CardContent>
       </Card>
     </div>

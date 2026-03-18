@@ -81,3 +81,24 @@ export async function createBrewAction(
 
   redirect('/brews')
 }
+
+export async function deleteBrewAction(id: string): Promise<void> {
+  const supabase = await createClient()
+  const { data: { user } } = await supabase.auth.getUser()
+
+  if (!user) {
+    redirect('/auth/login')
+  }
+
+  const { error } = await supabase
+    .from('brew_sessions')
+    .delete()
+    .eq('id', id)
+    .eq('user_id', user.id)
+
+  if (error) {
+    throw new Error(error.message)
+  }
+
+  redirect('/brews')
+}
