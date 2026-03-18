@@ -1,5 +1,6 @@
 import { redirect } from "next/navigation"
 import { createClient } from "@/lib/supabase/server"
+import { Nav } from "@/components/shared/Nav"
 
 export default async function ProtectedLayout({ children }: { children: React.ReactNode }) {
   const supabase = await createClient()
@@ -9,5 +10,10 @@ export default async function ProtectedLayout({ children }: { children: React.Re
     redirect("/auth/login")
   }
 
-  return <>{children}</>
+  return (
+    <div className="min-h-screen bg-background">
+      <Nav />
+      <main>{children}</main>
+    </div>
+  )
 }

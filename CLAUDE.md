@@ -128,6 +128,7 @@ See `docs/spec/data-model.md` for the full spec. Tables:
 - **Named exports** for all components except Next.js page and layout files (which use default exports).
 - Every data-fetching route needs loading and error states.
 - Enums are stored as plain text strings with Postgres check constraints, not Postgres enum types (easier to extend).
+- Every migration that creates a new table must include grant select, insert, update, delete on [table] to authenticated; after the RLS policies. RLS controls row-level access but the authenticated role still needs base table privileges.
 
 ## Route Groups
 

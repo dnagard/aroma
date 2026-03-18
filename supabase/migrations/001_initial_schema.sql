@@ -212,3 +212,8 @@ create policy "users can update own roast sessions"
 create policy "users can delete own roast sessions"
   on roast_sessions for delete
   using (auth.uid() = user_id);
+
+-- ── Role grants ───────────────────────────────────────────────────────────────
+grant select, insert, update, delete on bags to authenticated;
+grant select, insert, update, delete on brew_sessions to authenticated;
+grant select, insert, update, delete on roast_sessions to authenticated;
