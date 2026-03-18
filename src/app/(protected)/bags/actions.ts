@@ -61,6 +61,73 @@ export async function createBagAction(
   redirect('/bags')
 }
 
+const updateBagSchema = z.object({
+  id: z.string().uuid(),
+  name: z.string().min(1, 'Name is required'),
+  roaster: z.string().optional().transform(val => val === '' ? null : val),
+  origin_country: z.string().optional().transform(val => (val === '' || val === 'none') ? null : val),
+  origin_region: z.string().optional().transform(val => val === '' ? null : val),
+  process: z.preprocess(
+    val => (val === '' || val === 'none') ? null : val,
+    z.enum(['washed', 'natural', 'honey', 'anaerobic_natural', 'anaerobic_washed', 'wet_hulled', 'carbonic_maceration', 'other']).nullable().optional()
+  ),
+  roast_level: z.preprocess(
+    val => (val === '' || val === 'none') ? null : val,
+    z.enum(['light', 'medium_light', 'medium', 'medium_dark', 'dark']).nullable().optional()
+  ),
+  roast_date: z.string().optional().transform(val => val === '' ? null : val),
+  varietal: z.string().optional().transform(val => val === '' ? null : val),
+  altitude_masl: z.preprocess(
+    val => val === '' ? null : val,
+    z.coerce.number().int().positive().nullable().optional()
+  ),
+  rating: z.preprocess(
+    val => val === '' ? null : val,
+    z.coerce.number().min(1).max(10).nullable().optional()
+  ),
+  notes: z.string().optional().transform(val => val === '' ? null : val),
+})
+
+export type UpdateBagState = {
+  error?: string
+} | null
+
+export async function updateBagAction(
+  _prevState: UpdateBagState,
+  formData: FormData
+): Promise<UpdateBagState> {
+  const supabase = await createClient()
+  const { data: { user } } = await supabase.auth.getUser()
+
+  if (!user) {
+    redirect('/auth/login')
+  }
+
+  const raw = Object.fromEntries(formData.entries())
+
+  const parsed = updateBagSchema.safeParse(raw)
+  if (!parsed.success) {
+    return { error: parsed.error.issues[0].message }
+  }
+
+  const { id, varietal, ...rest } = parsed.data
+
+  const { error } = await supabase
+    .from('bags')
+    .update({
+      ...rest,
+      varietal: varietal ? varietal.split(',').map((v) => v.trim()).filter(Boolean) : null,
+    })
+    .eq('id', id)
+    .eq('user_id', user.id)
+
+  if (error) {
+    return { error: error.message }
+  }
+
+  redirect(`/bags/${id}`)
+}
+
 export async function deleteBagAction(id: string): Promise<void> {
   const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
