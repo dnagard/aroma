@@ -10,6 +10,11 @@ npm run build    # Production build
 npm run lint     # ESLint
 ```
 
+## Permissions 
+Claude has permission to run the following commands without asking:
+- `npm run build`
+- `npm run lint`
+
 No test suite is configured.
 
 ## Stack
