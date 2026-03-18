@@ -11,6 +11,7 @@ import { Textarea } from '@/components/ui/textarea'
 import { COFFEE_ORIGINS } from '@/lib/constants/origins'
 import type { UpdateBagState } from '@/app/(protected)/bags/actions'
 import type { Bag } from '@/types'
+import { FlavorTagInput } from '@/components/bags/FlavorTagInput'
 
 const PROCESS_OPTIONS = [
   { value: 'washed', label: 'Washed' },
@@ -140,15 +141,20 @@ export function EditBagForm({ bag, action }: Props) {
             </div>
           </div>
 
-          <div className="space-y-2">
-            <Label htmlFor="varietal">Varietal(s)</Label>
-            <Input
-              id="varietal"
-              name="varietal"
-              placeholder="e.g. Heirloom, Bourbon (comma-separated)"
-              defaultValue={bag.varietal?.join(', ') ?? ''}
-            />
-          </div>
+          <FlavorTagInput
+            name="varietal[]"
+            label="Varietal(s)"
+            placeholder="e.g. Heirloom, Bourbon"
+            defaultTags={bag.varietal ?? []}
+          />
+
+          <FlavorTagInput
+            name="flavor_notes[]"
+            label="Roaster flavor notes"
+            helperText="Add flavors as listed on the bag"
+            placeholder="e.g. Blueberry, Dark Chocolate"
+            defaultTags={bag.flavor_notes}
+          />
 
           <div className="space-y-2">
             <Label htmlFor="rating">Rating (1–10)</Label>

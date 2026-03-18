@@ -16,7 +16,6 @@ const createBagSchema = z.object({
     .enum(['light', 'medium_light', 'medium', 'medium_dark', 'dark'])
     .optional(),
   roast_date: z.string().optional(),
-  varietal: z.string().optional(),
   altitude_masl: z.coerce.number().int().positive().optional(),
   rating: z.coerce.number().min(1).max(10).optional(),
   notes: z.string().optional(),
@@ -37,6 +36,9 @@ export async function createBagAction(
     redirect('/auth/login')
   }
 
+  const flavorNotes = formData.getAll('flavor_notes[]').map(String).filter(Boolean)
+  const varietal = formData.getAll('varietal[]').map(String).filter(Boolean)
+
   const raw = Object.fromEntries(
     [...formData.entries()].filter(([, v]) => v !== '')
   )
@@ -46,11 +48,10 @@ export async function createBagAction(
     return { error: parsed.error.issues[0].message }
   }
 
-  const { varietal, ...rest } = parsed.data
-
   const { error } = await supabase.from('bags').insert({
-    ...rest,
-    varietal: varietal ? varietal.split(',').map((v) => v.trim()).filter(Boolean) : null,
+    ...parsed.data,
+    varietal: varietal.length > 0 ? varietal : null,
+    flavor_notes: flavorNotes,
     user_id: user.id,
   })
 
@@ -76,7 +77,6 @@ const updateBagSchema = z.object({
     z.enum(['light', 'medium_light', 'medium', 'medium_dark', 'dark']).nullable().optional()
   ),
   roast_date: z.string().optional().transform(val => val === '' ? null : val),
-  varietal: z.string().optional().transform(val => val === '' ? null : val),
   altitude_masl: z.preprocess(
     val => val === '' ? null : val,
     z.coerce.number().int().positive().nullable().optional()
@@ -103,6 +103,9 @@ export async function updateBagAction(
     redirect('/auth/login')
   }
 
+  const flavorNotes = formData.getAll('flavor_notes[]').map(String).filter(Boolean)
+  const varietal = formData.getAll('varietal[]').map(String).filter(Boolean)
+
   const raw = Object.fromEntries(formData.entries())
 
   const parsed = updateBagSchema.safeParse(raw)
@@ -110,13 +113,14 @@ export async function updateBagAction(
     return { error: parsed.error.issues[0].message }
   }
 
-  const { id, varietal, ...rest } = parsed.data
+  const { id, ...rest } = parsed.data
 
   const { error } = await supabase
     .from('bags')
     .update({
       ...rest,
-      varietal: varietal ? varietal.split(',').map((v) => v.trim()).filter(Boolean) : null,
+      varietal: varietal.length > 0 ? varietal : null,
+      flavor_notes: flavorNotes,
     })
     .eq('id', id)
     .eq('user_id', user.id)

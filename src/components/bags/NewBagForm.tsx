@@ -10,6 +10,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Textarea } from '@/components/ui/textarea'
 import { COFFEE_ORIGINS } from '@/lib/constants/origins'
 import type { CreateBagState } from '@/app/(protected)/bags/actions'
+import { FlavorTagInput } from '@/components/bags/FlavorTagInput'
 
 const PROCESS_OPTIONS = [
   { value: 'washed', label: 'Washed' },
@@ -127,10 +128,18 @@ export function NewBagForm({ action }: Props) {
             </div>
           </div>
 
-          <div className="space-y-2">
-            <Label htmlFor="varietal">Varietal(s)</Label>
-            <Input id="varietal" name="varietal" placeholder="e.g. Heirloom, Bourbon (comma-separated)" />
-          </div>
+          <FlavorTagInput
+            name="varietal[]"
+            label="Varietal(s)"
+            placeholder="e.g. Heirloom, Bourbon"
+          />
+
+          <FlavorTagInput
+            name="flavor_notes[]"
+            label="Roaster flavor notes"
+            helperText="Add flavors as listed on the bag"
+            placeholder="e.g. Blueberry, Dark Chocolate"
+          />
 
           <div className="space-y-2">
             <Label htmlFor="rating">Rating (1–10)</Label>
