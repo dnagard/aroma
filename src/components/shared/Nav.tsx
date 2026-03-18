@@ -1,4 +1,6 @@
 import Link from 'next/link'
+import { createClient } from '@/lib/supabase/server'
+import { UserMenu } from './UserMenu'
 
 const NAV_LINKS = [
   { href: '/dashboard', label: 'Dashboard' },
@@ -6,7 +8,10 @@ const NAV_LINKS = [
   { href: '/brews', label: 'Brews' },
 ] as const
 
-export function Nav() {
+export async function Nav() {
+  const supabase = await createClient()
+  const { data: { user } } = await supabase.auth.getUser()
+
   return (
     <nav className="border-b bg-background">
       <div className="mx-auto flex max-w-5xl items-center gap-6 px-4 py-3">
@@ -24,6 +29,11 @@ export function Nav() {
             </Link>
           ))}
         </div>
+        {user?.email && (
+          <div className="ml-auto">
+            <UserMenu email={user.email} />
+          </div>
+        )}
       </div>
     </nav>
   )
