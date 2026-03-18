@@ -1,12 +1,7 @@
 import Link from 'next/link'
 import { createClient } from '@/lib/supabase/server'
 import { UserMenu } from './UserMenu'
-
-const NAV_LINKS = [
-  { href: '/dashboard', label: 'Dashboard' },
-  { href: '/bags', label: 'Bags' },
-  { href: '/brews', label: 'Brews' },
-] as const
+import { NavLinks } from './NavLinks'
 
 export async function Nav() {
   const supabase = await createClient()
@@ -18,17 +13,7 @@ export async function Nav() {
         <Link href="/dashboard" className="text-sm font-semibold tracking-tight">
           Aroma
         </Link>
-        <div className="flex items-center gap-4">
-          {NAV_LINKS.map(({ href, label }) => (
-            <Link
-              key={href}
-              href={href}
-              className="text-sm text-muted-foreground transition-colors hover:text-foreground"
-            >
-              {label}
-            </Link>
-          ))}
-        </div>
+        <NavLinks />
         {user?.email && (
           <div className="ml-auto">
             <UserMenu email={user.email} />
