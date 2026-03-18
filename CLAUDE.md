@@ -182,4 +182,7 @@ Route protection is enforced in `app/(protected)/layout.tsx`, which redirects un
 - Café rating and discovery
 - Map integration
 
-
+## Planned but not yet built
+- Pour timeline for brew sessions: a dynamic list of timed pour stages 
+  (bloom, first pour, second pour, etc.) stored as JSONB. Only relevant 
+  for filter methods. Defer to Phase 2.
