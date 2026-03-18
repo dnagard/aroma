@@ -169,7 +169,11 @@ Route protection is enforced in `app/(protected)/layout.tsx`, which redirects un
 **Phase 2 — Sync & Polish**
 - Mobile-optimized UI
 - Toast notifications and loading states throughout
+- Add OAuth options for login
+- Move auth folder from public to protected (to access logout from protected page)
 
 **Phase 3 — Social / Discovery**
 - Café rating and discovery
 - Map integration
+
+
