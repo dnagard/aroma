@@ -2,6 +2,7 @@ import Link from 'next/link'
 import { createClient } from '@/lib/supabase/server'
 import { UserMenu } from './UserMenu'
 import { NavLinks } from './NavLinks'
+import { ThemeSwitcher } from './ThemeSwitcher'
 
 export async function Nav() {
   const supabase = await createClient()
@@ -14,11 +15,10 @@ export async function Nav() {
           Aroma
         </Link>
         <NavLinks />
-        {user?.email && (
-          <div className="ml-auto">
-            <UserMenu email={user.email} />
-          </div>
-        )}
+        <div className="ml-auto flex items-center gap-2">
+          <ThemeSwitcher />
+          {user?.email && <UserMenu email={user.email} />}
+        </div>
       </div>
     </nav>
   )
