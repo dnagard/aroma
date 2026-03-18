@@ -161,16 +161,18 @@ Route protection is enforced in `app/(protected)/layout.tsx`, which redirects un
 ## Current Phase
 
 **Phase 1 — Core Journaling**
-- [ ] Auth (login, sign-up, forgot password, email verification)
-- [ ] Supabase client setup (server + browser + middleware)
-- [ ] Database migrations (bags, brew_sessions, roast_sessions + RLS policies)
-- [ ] Bag management (CRUD)
-- [ ] Brew session logging (CRUD)
+- ✅ Auth (login, sign-up, forgot password, email verification)
+- ✅ Supabase client setup (server + browser + middleware)
+- ✅ Database migrations (bags, brew_sessions, roast_sessions + RLS policies)
+- ✅ Bag management (CRUD)
+- ✅ Brew session logging (CRUD)
+- ✅ Dashboard (stats overview)
+- ✅ Google OAuth
+- ✅ Theme switcher
 - [ ] Roast session logging + roast→bag pipeline
 - [ ] Tasting helper + flavor wheel
 - [ ] Learn section (static MDX)
 - [ ] Export (Markdown + CSV)
-- [ ] Dashboard (stats overview)
 
 **Phase 2 — Sync & Polish**
 - Mobile-optimized UI
