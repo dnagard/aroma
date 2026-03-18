@@ -14,16 +14,16 @@ export function NavLinks() {
   const pathname = usePathname()
 
   return (
-    <div className="flex items-center gap-4">
+    <div className="flex items-center">
       {NAV_LINKS.map(({ href, label }) => (
         <Link
           key={href}
           href={href}
           className={cn(
-            "text-sm transition-colors hover:text-foreground",
+            "text-sm font-medium px-3 py-1.5 rounded-full transition-colors",
             pathname === href || pathname.startsWith(href + '/')
-              ? "text-foreground font-medium"
-              : "text-muted-foreground"
+              ? "bg-accent text-accent-foreground font-semibold"
+              : "text-muted-foreground hover:text-foreground hover:bg-accent/50"
           )}
         >
           {label}

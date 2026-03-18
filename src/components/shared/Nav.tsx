@@ -14,7 +14,9 @@ export async function Nav() {
         <Link href="/dashboard" className="text-sm font-semibold tracking-tight">
           Aroma
         </Link>
-        <NavLinks />
+        <div className="hidden md:flex">
+          <NavLinks />
+        </div>
         <div className="ml-auto flex items-center gap-2">
           <ThemeSwitcher />
           {user?.email && <UserMenu email={user.email} />}

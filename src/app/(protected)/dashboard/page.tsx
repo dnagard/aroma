@@ -71,10 +71,10 @@ export default async function DashboardPage() {
       {/* Quick actions */}
       <div className="flex gap-3">
         <Button asChild>
-          <Link href="/brews/new">Log a brew</Link>
+          <Link href="/bags/new">Add a bag</Link>
         </Button>
         <Button asChild variant="outline">
-          <Link href="/bags/new">Add a bag</Link>
+          <Link href="/brews/new">Log a brew</Link>
         </Button>
       </div>
 
