@@ -11,11 +11,18 @@ import {
 } from "@/components/ui/dropdown-menu"
 
 const THEMES = [
+  { id: "everforest",       label: "Everforest",       dark: true  },
   { id: "paper",            label: "Paper",            dark: false },
   { id: "light",            label: "Light",            dark: false },
   { id: "dark",             label: "Dark",             dark: true  },
   { id: "catppuccin-latte", label: "Catppuccin Latte", dark: false },
   { id: "catppuccin-mocha", label: "Catppuccin Mocha", dark: true  },
+  { id: "gruvbox-light",    label: "Gruvbox Light",    dark: false },
+  { id: "everforest-light", label: "Everforest Light", dark: false },
+  { id: "mocha",            label: "Mocha",            dark: true  },
+  { id: "kanagawa",         label: "Kanagawa",         dark: true  },
+  { id: "gruvbox",          label: "Gruvbox",          dark: true  },
+  { id: "nord",             label: "Nord",             dark: true  },
 ] as const
 
 type ThemeId = (typeof THEMES)[number]["id"]
@@ -24,11 +31,7 @@ function applyTheme(themeId: ThemeId) {
   const html = document.documentElement
   const theme = THEMES.find(t => t.id === themeId) ?? THEMES[0]
 
-  if (themeId === "paper") {
-    html.removeAttribute("data-theme")
-  } else {
-    html.setAttribute("data-theme", themeId)
-  }
+  html.setAttribute("data-theme", themeId)
 
   if (theme.dark) {
     html.classList.add("dark")
@@ -39,7 +42,7 @@ function applyTheme(themeId: ThemeId) {
 
 export function ThemeSwitcher() {
   const [current, setCurrent] = useState<ThemeId>(
-    () => (typeof window !== "undefined" ? (localStorage.getItem("theme") ?? "paper") : "paper") as ThemeId
+    () => (typeof window !== "undefined" ? (localStorage.getItem("theme") ?? "everforest") : "everforest") as ThemeId
   )
 
   useEffect(() => {
