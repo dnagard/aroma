@@ -205,7 +205,7 @@ export function FlavorSelector({ defaultTags = [] }: Props) {
       <div className="hidden md:block">
         <div className="grid grid-cols-1 gap-2 sm:grid-cols-3 sm:gap-0 sm:divide-x sm:border sm:h-48 rounded-md overflow-hidden">
           {/* Column 1 — Categories */}
-          <div className="relative overflow-y-auto h-full">
+          <div className="overflow-y-auto h-full">
             {FLAVOR_WHEEL.map((cat) => (
               <button
                 key={cat.id}
@@ -223,7 +223,7 @@ export function FlavorSelector({ defaultTags = [] }: Props) {
                 {cat.label}
               </button>
             ))}
-            <div className="pointer-events-none absolute bottom-0 inset-x-0 h-8 bg-gradient-to-t from-background to-transparent" />
+            <div className="pointer-events-none sticky bottom-0 inset-x-0 h-8 bg-gradient-to-t from-background to-transparent" />
           </div>
 
           {/* Column 2 — Subcategories */}
