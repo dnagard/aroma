@@ -173,6 +173,7 @@ Route protection is enforced in `app/(protected)/layout.tsx`, which redirects un
 - [ ] Tasting helper + flavor wheel
 - [ ] Learn section (static MDX)
 - [ ] Export (Markdown + CSV)
+- Fix small issue with decimals in rating not being anything but .5
 
 **Phase 2 — Sync & Polish**
 - Mobile-optimized UI
@@ -188,6 +189,7 @@ Route protection is enforced in `app/(protected)/layout.tsx`, which redirects un
 **Phase 3 — Social / Discovery**
 - Café rating and discovery
 - Map integration
+- Add some coffee house spotify playlist links for fun 
 
 ## Planned but not yet built
 - Pour timeline for brew sessions: a dynamic list of timed pour stages 
