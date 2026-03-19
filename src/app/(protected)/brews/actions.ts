@@ -58,6 +58,7 @@ export async function createBrewAction(
     redirect('/auth/login')
   }
 
+  const flavorNotes = formData.getAll('flavor_notes[]').map(String).filter(Boolean)
   const raw = Object.fromEntries(formData.entries())
 
   const parsed = createBrewSchema.safeParse(raw)
@@ -73,6 +74,7 @@ export async function createBrewAction(
   const { error } = await supabase.from('brew_sessions').insert({
     ...rest,
     brew_time_s: brew_time_s_combined,
+    flavor_notes: flavorNotes,
     user_id: user.id,
   })
 
@@ -138,6 +140,7 @@ export async function updateBrewAction(
     redirect('/auth/login')
   }
 
+  const flavorNotes = formData.getAll('flavor_notes[]').map(String).filter(Boolean)
   const raw = Object.fromEntries(formData.entries())
 
   const parsed = updateBrewSchema.safeParse(raw)
@@ -152,7 +155,7 @@ export async function updateBrewAction(
 
   const { error } = await supabase
     .from('brew_sessions')
-    .update({ ...rest, brew_time_s: brew_time_s_combined })
+    .update({ ...rest, brew_time_s: brew_time_s_combined, flavor_notes: flavorNotes })
     .eq('id', id)
     .eq('user_id', user.id)
 

@@ -9,6 +9,7 @@ import { Label } from '@/components/ui/label'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { Textarea } from '@/components/ui/textarea'
 import { BREW_METHOD_OPTIONS } from '@/lib/constants/methods'
+import { FlavorSelector } from '@/components/brew/FlavorSelector'
 import type { UpdateBrewState } from '@/app/(protected)/brews/actions'
 import type { Bag, BrewSession } from '@/types'
 
@@ -173,6 +174,8 @@ export function EditBrewForm({ brew, bags, action }: Props) {
               />
             </div>
           </div>
+
+          <FlavorSelector defaultTags={brew.flavor_notes} />
 
           <div className="space-y-2">
             <Label htmlFor="rating">Rating (1–10)</Label>
