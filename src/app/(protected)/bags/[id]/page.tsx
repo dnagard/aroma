@@ -65,7 +65,13 @@ export default async function BagDetailPage({
   const sortedNotes = [...noteFreqMap.entries()].sort((a, b) => b[1] - a[1])
   const topNotes = sortedNotes.slice(0, 3)
   const restNotes = sortedNotes.slice(3, 10)
-  const hasTastingProfile = sortedNotes.length > 0
+
+  const ratedBrews = (brews ?? []).filter((b) => b.rating != null)
+  const avgRating = ratedBrews.length > 0
+    ? ratedBrews.reduce((sum, b) => sum + b.rating!, 0) / ratedBrews.length
+    : null
+
+  const hasTastingProfile = sortedNotes.length > 0 || avgRating != null
 
   return (
     <div className="max-w-2xl mx-auto px-4 py-8 space-y-6">
@@ -161,6 +167,11 @@ export default async function BagDetailPage({
             <CardTitle className="text-base">Your tasting profile</CardTitle>
           </CardHeader>
           <CardContent className="space-y-3">
+            {avgRating != null && (
+              <p className="text-sm text-muted-foreground">
+                Avg. brew rating: {avgRating.toFixed(1)} across {ratedBrews.length} {ratedBrews.length === 1 ? 'brew' : 'brews'}
+              </p>
+            )}
             {topNotes.length > 0 && (
               <div className="flex flex-wrap gap-2">
                 {topNotes.map(([note, count]) => (

@@ -75,20 +75,27 @@ export default async function BrewsPage() {
       ) : (
         <div className="divide-y rounded-lg border">
           {(brews as BrewWithBag[]).map((brew) => (
-            <Link
+            <div
               key={brew.id}
-              href={`/brews/${brew.id}`}
-              className="flex items-center justify-between gap-4 px-4 py-3 hover:bg-muted/50 transition-colors"
+              className="relative flex items-center justify-between gap-4 px-4 py-3 hover:bg-muted/50 transition-colors"
             >
+              <Link href={`/brews/${brew.id}`} className="absolute inset-0" aria-label={`View brew of ${brew.bags.name}`} />
               <div className="min-w-0">
-                <p className="truncate font-medium">{brew.bags.name}</p>
+                <p className="truncate font-medium">
+                  <Link
+                    href={`/bags/${brew.bag_id}`}
+                    className="relative z-10 underline-offset-2 hover:underline hover:text-foreground transition-colors"
+                  >
+                    {brew.bags.name}
+                  </Link>
+                </p>
                 <p className="text-sm text-muted-foreground">
                   {BREW_METHOD_LABELS[brew.method] ?? brew.method}
                   {' · '}
                   {new Date(brew.brewed_at).toLocaleDateString()}
                 </p>
               </div>
-              <div className="flex shrink-0 items-center gap-6 text-sm text-muted-foreground">
+              <div className="relative z-10 flex shrink-0 items-center gap-6 text-sm text-muted-foreground">
                 {brew.dose_grams != null && brew.out_grams != null && (
                   <span>{brew.dose_grams}g / {brew.out_grams}g</span>
                 )}
@@ -96,7 +103,7 @@ export default async function BrewsPage() {
                   <span className="font-medium text-foreground">{brew.rating}</span>
                 )}
               </div>
-            </Link>
+            </div>
           ))}
         </div>
       )}
