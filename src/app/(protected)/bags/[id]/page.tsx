@@ -55,6 +55,18 @@ export default async function BagDetailPage({
 
   const deleteWithId = deleteBagAction.bind(null, bag.id)
 
+  // Aggregate flavor notes from all brew sessions
+  const noteFreqMap = new Map<string, number>()
+  for (const brew of brews ?? []) {
+    for (const note of brew.flavor_notes ?? []) {
+      noteFreqMap.set(note, (noteFreqMap.get(note) ?? 0) + 1)
+    }
+  }
+  const sortedNotes = [...noteFreqMap.entries()].sort((a, b) => b[1] - a[1])
+  const topNotes = sortedNotes.slice(0, 3)
+  const restNotes = sortedNotes.slice(3, 10)
+  const hasTastingProfile = sortedNotes.length > 0
+
   return (
     <div className="max-w-2xl mx-auto px-4 py-8 space-y-6">
       {/* Header */}
@@ -141,6 +153,44 @@ export default async function BagDetailPage({
           </dl>
         </CardContent>
       </Card>
+
+      {/* Tasting Profile */}
+      {hasTastingProfile && (
+        <Card>
+          <CardHeader>
+            <CardTitle className="text-base">Your tasting profile</CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-3">
+            {topNotes.length > 0 && (
+              <div className="flex flex-wrap gap-2">
+                {topNotes.map(([note, count]) => (
+                  <span
+                    key={note}
+                    className="inline-flex items-center gap-1.5 rounded-full bg-secondary px-4 py-1.5 text-sm font-medium text-secondary-foreground"
+                  >
+                    {note}
+                    <span className="rounded-full bg-secondary-foreground/15 px-1.5 py-0.5 text-xs font-semibold tabular-nums">
+                      ×{count}
+                    </span>
+                  </span>
+                ))}
+              </div>
+            )}
+            {restNotes.length > 0 && (
+              <div className="flex flex-wrap gap-1.5">
+                {restNotes.map(([note]) => (
+                  <span
+                    key={note}
+                    className="inline-flex items-center rounded-full border border-border px-3 py-1 text-xs text-muted-foreground"
+                  >
+                    {note}
+                  </span>
+                ))}
+              </div>
+            )}
+          </CardContent>
+        </Card>
+      )}
 
       {/* Brew History */}
       <Card>
