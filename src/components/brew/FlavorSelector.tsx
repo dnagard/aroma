@@ -205,67 +205,75 @@ export function FlavorSelector({ defaultTags = [] }: Props) {
       <div className="hidden md:block">
         <div className="grid grid-cols-1 gap-2 sm:grid-cols-3 sm:gap-0 sm:divide-x sm:border sm:h-48 rounded-md overflow-hidden">
           {/* Column 1 — Categories */}
-          <div className="overflow-y-auto h-full">
-            {FLAVOR_WHEEL.map((cat) => (
-              <button
-                key={cat.id}
-                type="button"
-                onClick={() => handleSelectCategory(cat.id)}
-                className={cn(
-                  'flex items-center gap-2 w-full px-3 py-2 text-sm text-left transition-colors hover:bg-muted',
-                  selectedCategory === cat.id && 'bg-muted font-medium'
-                )}
-              >
-                <span
-                  className="w-2.5 h-2.5 rounded-full shrink-0"
-                  style={{ backgroundColor: cat.color }}
-                />
-                {cat.label}
-              </button>
-            ))}
-            <div className="pointer-events-none sticky bottom-0 inset-x-0 h-8 bg-gradient-to-t from-background to-transparent" />
+          <div className="relative h-full">
+            <div className="absolute inset-0 overflow-y-auto">
+              {FLAVOR_WHEEL.map((cat) => (
+                <button
+                  key={cat.id}
+                  type="button"
+                  onClick={() => handleSelectCategory(cat.id)}
+                  className={cn(
+                    'flex items-center gap-2 w-full px-3 py-2 text-sm text-left transition-colors hover:bg-muted',
+                    selectedCategory === cat.id && 'bg-muted font-medium'
+                  )}
+                >
+                  <span
+                    className="w-2.5 h-2.5 rounded-full shrink-0"
+                    style={{ backgroundColor: cat.color }}
+                  />
+                  {cat.label}
+                </button>
+              ))}
+            </div>
+            <div className="pointer-events-none absolute bottom-0 inset-x-0 h-8 bg-gradient-to-t from-background to-transparent" />
           </div>
 
           {/* Column 2 — Subcategories */}
-          <div className="overflow-y-auto h-full">
-            {activeCategory ? (
-              activeCategory.subcategories.map((sub) => (
-                <button
-                  key={sub.id}
-                  type="button"
-                  onClick={() => handleSelectSubcategory(sub.id)}
-                  className={cn(
-                    'w-full px-3 py-2 text-sm text-left transition-colors hover:bg-muted',
-                    selectedSubcategory === sub.id && 'bg-muted font-medium'
-                  )}
-                >
-                  {sub.label}
-                </button>
-              ))
-            ) : (
-              <p className="px-3 py-2 text-sm text-muted-foreground">Select a category</p>
-            )}
+          <div className="relative h-full">
+            <div className="absolute inset-0 overflow-y-auto">
+              {activeCategory ? (
+                activeCategory.subcategories.map((sub) => (
+                  <button
+                    key={sub.id}
+                    type="button"
+                    onClick={() => handleSelectSubcategory(sub.id)}
+                    className={cn(
+                      'w-full px-3 py-2 text-sm text-left transition-colors hover:bg-muted',
+                      selectedSubcategory === sub.id && 'bg-muted font-medium'
+                    )}
+                  >
+                    {sub.label}
+                  </button>
+                ))
+              ) : (
+                <p className="px-3 py-2 text-sm text-muted-foreground">Select a category</p>
+              )}
+            </div>
+            <div className="pointer-events-none absolute bottom-0 inset-x-0 h-8 bg-gradient-to-t from-background to-transparent" />
           </div>
 
           {/* Column 3 — Notes */}
-          <div className="overflow-y-auto h-full">
-            {activeSubcategory ? (
-              activeSubcategory.notes.map((note) => (
-                <button
-                  key={note}
-                  type="button"
-                  onClick={() => toggleNote(note)}
-                  className={cn(
-                    'w-full px-3 py-2 text-sm text-left transition-colors hover:bg-muted',
-                    selectedNotes.includes(note) && 'bg-muted font-medium'
-                  )}
-                >
-                  {selectedNotes.includes(note) ? '✓ ' : ''}{note}
-                </button>
-              ))
-            ) : (
-              <p className="px-3 py-2 text-sm text-muted-foreground">Select a subcategory</p>
-            )}
+          <div className="relative h-full">
+            <div className="absolute inset-0 overflow-y-auto">
+              {activeSubcategory ? (
+                activeSubcategory.notes.map((note) => (
+                  <button
+                    key={note}
+                    type="button"
+                    onClick={() => toggleNote(note)}
+                    className={cn(
+                      'w-full px-3 py-2 text-sm text-left transition-colors hover:bg-muted',
+                      selectedNotes.includes(note) && 'bg-muted font-medium'
+                    )}
+                  >
+                    {selectedNotes.includes(note) ? '✓ ' : ''}{note}
+                  </button>
+                ))
+              ) : (
+                <p className="px-3 py-2 text-sm text-muted-foreground">Select a subcategory</p>
+              )}
+            </div>
+            <div className="pointer-events-none absolute bottom-0 inset-x-0 h-8 bg-gradient-to-t from-background to-transparent" />
           </div>
         </div>
       </div>
