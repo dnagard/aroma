@@ -16,7 +16,7 @@ export function BottomNav() {
 
   return (
     <nav className="fixed bottom-0 left-0 right-0 z-50 border-t bg-background md:hidden">
-      <div className="flex items-center justify-around h-16">
+      <div className="flex items-center h-16 px-2 gap-1">
         {NAV_LINKS.map(({ href, label, icon: Icon }) => {
           const isActive = pathname === href || pathname.startsWith(href + "/")
           return (
@@ -24,14 +24,14 @@ export function BottomNav() {
               key={href}
               href={href}
               className={cn(
-                "flex flex-col items-center gap-1 px-4 py-2 rounded-lg transition-colors",
-                isActive ? "text-foreground" : "text-muted-foreground hover:text-foreground"
+                "flex-1 flex flex-col items-center justify-center gap-1 py-2 rounded-full transition-colors",
+                isActive
+                  ? "bg-accent text-foreground"
+                  : "text-muted-foreground hover:text-foreground hover:bg-accent/50"
               )}
             >
-              <span className={cn("p-1 rounded-full", isActive && "bg-accent")}>
-                <Icon className="h-5 w-5" />
-              </span>
-              <span className={cn("text-xs", isActive ? "font-semibold" : "font-medium")}>{label}</span>
+              <Icon className="h-5 w-5" />
+              <span className={cn("text-[2.5vw] leading-none", isActive ? "font-semibold" : "font-medium")}>{label}</span>
             </Link>
           )
         })}
