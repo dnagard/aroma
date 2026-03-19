@@ -198,7 +198,7 @@ export default async function BagDetailPage({
           <CardTitle className="text-base">Brew History</CardTitle>
           {brews && brews.length > 0 && (
             <Button size="sm" asChild>
-              <Link href="/brews/new">Log a brew</Link>
+              <Link href={`/brews/new?bag_id=${bag.id}`}>Log a brew</Link>
             </Button>
           )}
         </CardHeader>
@@ -207,7 +207,7 @@ export default async function BagDetailPage({
             <div className="flex flex-col items-center gap-3 py-4 text-center">
               <p className="text-sm text-muted-foreground">No brews logged yet.</p>
               <Button size="sm" asChild>
-                <Link href="/brews/new">Log a brew with this bag</Link>
+                <Link href={`/brews/new?bag_id=${bag.id}`}>Log a brew with this bag</Link>
               </Button>
             </div>
           ) : (

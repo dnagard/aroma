@@ -3,13 +3,19 @@ import { createClient } from '@/lib/supabase/server'
 import { NewBrewForm } from '@/components/brew/NewBrewForm'
 import { createBrewAction } from '@/app/(protected)/brews/actions'
 
-export default async function NewBrewPage() {
+export default async function NewBrewPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ bag_id?: string }>
+}) {
   const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
 
   if (!user) {
     redirect('/auth/login')
   }
+
+  const { bag_id } = await searchParams
 
   const { data: bags } = await supabase
     .from('bags')
@@ -26,6 +32,7 @@ export default async function NewBrewPage() {
         action={createBrewAction}
         bags={bags ?? []}
         defaultBrewedAt={defaultBrewedAt}
+        defaultBagId={bag_id}
       />
     </div>
   )
