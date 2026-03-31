@@ -1,6 +1,6 @@
 'use client'
 
-import { useActionState } from 'react'
+import { useActionState, useState } from 'react'
 import Link from 'next/link'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
@@ -19,12 +19,20 @@ type Props = {
   action: (prevState: UpdateBrewState, formData: FormData) => Promise<UpdateBrewState>
 }
 
+function utcToLocalDatetimeString(utc: string): string {
+  const d = new Date(utc)
+  const offset = d.getTimezoneOffset() * 60_000
+  return new Date(d.getTime() - offset).toISOString().slice(0, 16)
+}
+
 export function EditBrewForm({ brew, bags, action }: Props) {
   const [state, formAction, pending] = useActionState(action, null)
+  const [tzOffset] = useState(() => new Date().getTimezoneOffset())
 
   return (
     <form action={formAction}>
       <input type="hidden" name="id" value={brew.id} />
+      <input type="hidden" name="tz_offset" value={tzOffset} />
       <Card>
         <CardHeader>
           <CardTitle>Brew details</CardTitle>
@@ -72,7 +80,7 @@ export function EditBrewForm({ brew, bags, action }: Props) {
               id="brewed_at"
               name="brewed_at"
               type="datetime-local"
-              defaultValue={brew.brewed_at.slice(0, 16)}
+              defaultValue={utcToLocalDatetimeString(brew.brewed_at)}
             />
           </div>
 

@@ -17,8 +17,13 @@ import type { Bag, BrewSession } from '@/types'
 type Props = {
   action: (prevState: CreateBrewState, formData: FormData) => Promise<CreateBrewState>
   bags: Pick<Bag, 'id' | 'name'>[]
-  defaultBrewedAt: string
   defaultBagId?: string
+}
+
+function localDatetimeString(): string {
+  const now = new Date()
+  const offset = now.getTimezoneOffset() * 60_000
+  return new Date(now.getTime() - offset).toISOString().slice(0, 16)
 }
 
 function useLastBrew(bagId: string | null, method: string | null): BrewSession | null {
@@ -50,12 +55,13 @@ function useLastBrew(bagId: string | null, method: string | null): BrewSession |
   return lastBrew
 }
 
-export function NewBrewForm({ action, bags, defaultBrewedAt, defaultBagId }: Props) {
+export function NewBrewForm({ action, bags, defaultBagId }: Props) {
   const [state, formAction, pending] = useActionState(action, null)
 
   const [bagId, setBagId] = useState<string | null>(defaultBagId ?? null)
   const [method, setMethod] = useState<string | null>(null)
   const [showFullNote, setShowFullNote] = useState(false)
+  const [tzOffset] = useState(() => new Date().getTimezoneOffset())
 
   const [doseGrams, setDoseGrams] = useState('')
   const [outGrams, setOutGrams] = useState('')
@@ -114,6 +120,7 @@ export function NewBrewForm({ action, bags, defaultBrewedAt, defaultBagId }: Pro
 
   return (
     <form action={formAction}>
+      <input type="hidden" name="tz_offset" value={tzOffset} />
       <Card>
         <CardHeader>
           <CardTitle>Brew details</CardTitle>
@@ -193,7 +200,7 @@ export function NewBrewForm({ action, bags, defaultBrewedAt, defaultBagId }: Pro
               id="brewed_at"
               name="brewed_at"
               type="datetime-local"
-              defaultValue={defaultBrewedAt}
+              defaultValue={localDatetimeString()}
             />
           </div>
 

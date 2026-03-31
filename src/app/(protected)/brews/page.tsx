@@ -96,9 +96,17 @@ export default async function BrewsPage() {
                 </p>
               </div>
               <div className="relative z-10 flex shrink-0 items-center gap-6 text-sm text-muted-foreground">
-                {brew.dose_grams != null && brew.out_grams != null && (
-                  <span>{brew.dose_grams}g / {brew.out_grams}g</span>
-                )}
+                {(() => {
+                  const dosePart = brew.dose_grams != null && brew.out_grams != null
+                    ? `${brew.dose_grams}g → ${brew.out_grams}g`
+                    : brew.dose_grams != null
+                    ? `${brew.dose_grams}g`
+                    : null
+                  const cell = brew.grind_size && dosePart
+                    ? `${brew.grind_size} · ${dosePart}`
+                    : brew.grind_size ?? dosePart
+                  return cell != null ? <span>{cell}</span> : null
+                })()}
                 {brew.rating != null && (
                   <span className="font-medium text-foreground">{brew.rating}</span>
                 )}

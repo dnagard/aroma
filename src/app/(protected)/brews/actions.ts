@@ -4,6 +4,17 @@ import { redirect } from 'next/navigation'
 import { z } from 'zod'
 import { createClient } from '@/lib/supabase/server'
 
+// Converts a naive datetime-local string + getTimezoneOffset() value into
+// a full ISO 8601 string with offset that Postgres can store correctly.
+// Note: getTimezoneOffset() returns minutes *behind* UTC (positive = west of UTC).
+function toIsoWithOffset(localStr: string, offsetMinutes: number): string {
+  const sign = offsetMinutes <= 0 ? '+' : '-'
+  const abs = Math.abs(offsetMinutes)
+  const hh = String(Math.floor(abs / 60)).padStart(2, '0')
+  const mm = String(abs % 60).padStart(2, '0')
+  return `${localStr}:00${sign}${hh}:${mm}`
+}
+
 const createBrewSchema = z.object({
   bag_id: z.string().uuid('Please select a bag'),
   method: z.enum([
@@ -11,6 +22,7 @@ const createBrewSchema = z.object({
     'chemex', 'moka_pot', 'cold_brew', 'siphon', 'kalita', 'other',
   ] as const),
   brewed_at: z.string().optional().transform(val => val === '' ? undefined : val),
+  tz_offset: z.preprocess(val => val === '' ? 0 : val, z.coerce.number().int()),
   dose_grams: z.preprocess(
     val => val === '' ? null : val,
     z.coerce.number().positive().nullable().optional()
@@ -66,13 +78,15 @@ export async function createBrewAction(
     return { error: parsed.error.issues[0].message }
   }
 
-  const { brew_time_m, brew_time_s, ...rest } = parsed.data
+  const { brew_time_m, brew_time_s, tz_offset, brewed_at, ...rest } = parsed.data
   const brew_time_s_combined = (brew_time_m == null && brew_time_s == null)
     ? null
     : (brew_time_m ?? 0) * 60 + (brew_time_s ?? 0)
+  const brewed_at_tz = brewed_at ? toIsoWithOffset(brewed_at, tz_offset) : undefined
 
   const { error } = await supabase.from('brew_sessions').insert({
     ...rest,
+    brewed_at: brewed_at_tz,
     brew_time_s: brew_time_s_combined,
     flavor_notes: flavorNotes,
     user_id: user.id,
@@ -93,6 +107,7 @@ const updateBrewSchema = z.object({
     'chemex', 'moka_pot', 'cold_brew', 'siphon', 'kalita', 'other',
   ] as const),
   brewed_at: z.string().optional().transform(val => val === '' ? undefined : val),
+  tz_offset: z.preprocess(val => val === '' ? 0 : val, z.coerce.number().int()),
   dose_grams: z.preprocess(
     val => val === '' ? null : val,
     z.coerce.number().positive().nullable().optional()
@@ -148,14 +163,20 @@ export async function updateBrewAction(
     return { error: parsed.error.issues[0].message }
   }
 
-  const { id, brew_time_m, brew_time_s, ...rest } = parsed.data
+  const { id, brew_time_m, brew_time_s, tz_offset, brewed_at, ...rest } = parsed.data
   const brew_time_s_combined = (brew_time_m == null && brew_time_s == null)
     ? null
     : (brew_time_m ?? 0) * 60 + (brew_time_s ?? 0)
+  const brewed_at_tz = brewed_at ? toIsoWithOffset(brewed_at, tz_offset) : undefined
 
   const { error } = await supabase
     .from('brew_sessions')
-    .update({ ...rest, brew_time_s: brew_time_s_combined, flavor_notes: flavorNotes })
+    .update({
+      ...rest,
+      brewed_at: brewed_at_tz,
+      brew_time_s: brew_time_s_combined,
+      flavor_notes: flavorNotes,
+    })
     .eq('id', id)
     .eq('user_id', user.id)
 
